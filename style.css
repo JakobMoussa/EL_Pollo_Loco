@@ -9,3 +9,33 @@ body {
 canvas {
     background-color: black;
 }
+
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        min-height: 100vh;
+        max-width: 1440px;
+        margin: 0 auto;
+        background-image: url('img/5_background/desert(1).jpg');
+        background-position: center;
+        background-size: cover; 
+    }
+
+    h1 {
+        font-family: 'Bangers', cursive;
+        color: rgb(255, 238, 1);
+        background: radial-gradient(ellipse at center, #fef600, #ff7003);
+         -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        font-size: 120px;
+        font-weight: 1000;
+        margin: 0;
+    }
+
+
+    

@@ -24,13 +24,31 @@ class character extends MovableObject {
 
     ];
 
+    IMAGES_DEAD = [
+        'img/2_character_pepe/5_dead/D-51.png',
+        'img/2_character_pepe/5_dead/D-52.png',
+        'img/2_character_pepe/5_dead/D-53.png',
+        'img/2_character_pepe/5_dead/D-54.png',
+        'img/2_character_pepe/5_dead/D-55.png',
+        'img/2_character_pepe/5_dead/D-56.png',
+        'img/2_character_pepe/5_dead/D-57.png'
+    ];
+
+    IMAGES_HURT = [
+        'img/2_character_pepe/4_hurt/H-41.png',
+        'img/2_character_pepe/4_hurt/H-42.png',
+        'img/2_character_pepe/4_hurt/H-43.png'
+    ];
+
     world;
   
     constructor() {
         super().loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.IMAGES_JAMPING);
         this.loadImages(this.IMAGES_WALKING);
-        this.applygravity();
+        this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_HURT);
+        this.applyGravity();
         this.animate();
     }
 
@@ -38,23 +56,28 @@ class character extends MovableObject {
 
         setInterval(() => {
          if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+            this.moveRight();
             this.x += this.speed;
             this.otherDirection = false;
         }
 
         if (this.world.keyboard.LEFT && this.x > 0) {
-            this.x -= this.speed;
-            this.otherDirection = true;
+           this.moveLeft();
+           this.otherDirection = true;
         }
-        if(this.world.keyboard.UP & !this.isAboveGround()) {
-            this.speedY = 20;
+        if(this.world.keyboard.SPACE && !this.isAboveGround()) {
+           this.jump();
         }
          this.world.camera_x = -this.x +100;
         }, 1000/60);
 
         setInterval(() => {
-
-            if(this.isAboveGround()) {
+            if (this.isHurt()) {
+                this.playAnimation(this.IMAGES_HURT);
+            }
+             else if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+            } else if(this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JAMPING);
             } else {
 
@@ -65,9 +88,9 @@ class character extends MovableObject {
         }, 50);
     }
 
-    // jump() {
-
-    // }
+    jump(){
+        this.speedY = 22;
+    }
 }
 
 

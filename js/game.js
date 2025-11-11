@@ -6,6 +6,7 @@ class Keyboard {
         this.UP = false;
         this.DOWN = false;
         this.SPACE = false;
+        this.D = false;
     }
 }
 
@@ -20,12 +21,13 @@ function init() {
     console.log('Game initialized');
 }
 
-window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', (e) => {    
     if(e.keyCode == 39) keyboard.RIGHT = true;
     if(e.keyCode == 37) keyboard.LEFT = true;
     if(e.keyCode == 40) keyboard.DOWN = true;
     if(e.keyCode == 38) keyboard.UP = true;
     if(e.keyCode == 32) keyboard.SPACE = true;
+    if(e.keyCode == 68) keyboard.D = true;
 });
 
 window.addEventListener('keyup', (e) => {
@@ -34,4 +36,5 @@ window.addEventListener('keyup', (e) => {
     if(e.keyCode == 40) keyboard.DOWN = false;
     if(e.keyCode == 38) keyboard.UP = false;
     if(e.keyCode == 32) keyboard.SPACE = false;
+    if(e.keyCode == 68) keyboard.D = false;
 });
