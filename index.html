@@ -21,6 +21,7 @@
     <script src="./models/endboss.class.js"></script>
     <script src="./Levels/level1.js"></script>
     <script src="./js/game.js"></script>
+    <script src="script.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Economica:ital,wght@0,400;0,700;1,400;1,700&family=Fredoka:wght@300..700&family=Gidole&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Raleway:ital,wght@0,100..900;1,100..900&family
@@ -31,9 +32,47 @@
 <body onload="init()">
 
         <h1>El Pollo Loco</h1>
-        
-        <canvas id="canvas" width="720" height="480"></canvas>
-    </div>
+        <div id="startScreen">
+            <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="startImage" id="startImage">
+            <button id="controls">Controls</button>
+            <button id="impressum">Impressum</button>
+            <button id="startButton">Start</button> 
+        </div>
 
+        <canvas id="canvas" width="720" height="480" style="display: none;"></canvas>
+        
+      
+            <div id="popup" class="hidden">
+                    <h2>Controls</h2>
+                    <div class="controls-images">
+                        <img src="img/controls/1.png" alt="Arrow-left" class="arrow-left">
+                        <img src="img/controls/2.png" alt="arrow-right" class="arrow-right">
+                        <div class="text">
+                            <img src="img/controls/3.png" alt="space-button" class="D-button">
+                            <p>Throw</p>
+                        </div>
+
+                        <div class="text">
+                            <img src="img/controls/4.png" alt="D-button" class="space-button">
+                            <p>Jump</p>
+                        </div>
+                    </div>
+                    <button class="closePopup">X</button>
+            </div>
+
+            <div id="popup2" class="hidden">
+                 <h2>Impressum</h2>
+                 <p class="txt">Max Mustermann <br>
+                    Mustermann Marketing <br>
+                    Musterstraße 12 <br>
+                    56170 Bendorf
+                    <br> Deutschland <br>
+                     <br>
+                    📞 Telefon: +49 (0)176 12345678 <br>
+                    📧 E-Mail: info@mustermann-marketing.de
+                </p>
+                 <button class="closePopup">X</button>
+            </div>
+  
 </body>
 </html>

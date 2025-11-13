@@ -18,8 +18,24 @@ let keyboard = new Keyboard();
 function init() {
     canvas = document.getElementById('canvas');
     world = new World(canvas, keyboard);
+    document.getElementById('startButton').addEventListener('click', startGame);
     console.log('Game initialized');
 }
+
+function startGame() {
+    // Sartscreen ausblenden
+    document.getElementById('startScreen').style.display ='none';
+
+    //Canvas anzeigen
+    canvas.style.display ='block';
+
+    // World inistialieseren und Spiel starten
+
+    world = new World(canvas, keyboard);
+
+}
+
+
 
 window.addEventListener('keydown', (e) => {    
     if(e.keyCode == 39) keyboard.RIGHT = true;
