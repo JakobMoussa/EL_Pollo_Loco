@@ -1,4 +1,4 @@
-class statusBarBottle extends DrawableObject {
+class statusBarBottle extends Bar {
 
 IMAGES = [
     'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
@@ -15,11 +15,11 @@ percentage = 0;
     constructor() {
         super();
         this.loadImages(this.IMAGES);
-        this.x = 50;      // Position der Bar
-        this.y = 100;      // z.B. unter der Health-Bar
+        this.x = 50;     
+        this.y = 100;   
         this.width = 200;
         this.height = 50;
-        this.setPercentage(0); // Coins-Bar startet bei 0%
+        this.setPercentage(0);
     }
    setPercentage(percentage) {
         this.percentage = percentage;

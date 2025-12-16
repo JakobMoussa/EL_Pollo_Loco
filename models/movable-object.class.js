@@ -4,16 +4,21 @@ class MovableObject extends DrawableObject {
         speedY = 0;
         acceleration = 2;
         energy = 100;
-    
-        applyGravity(){
-        setInterval(() => {
-            if(this.isAboveGround() || this.speedY > 0) {
-            this.y -= this.speedY;
-            this.speedY -= this.acceleration;
-            }
-        }, 1000/ 25)
-        }
+        lastHit = 0;
+        applyGravityInterval;
+        offset = {
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+        };
 
+        isColliding(mo) {
+            return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+            this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+            this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+            this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+        }
 
         isAboveGround() {
             if(this instanceof ThrowableObject) {
@@ -23,16 +28,16 @@ class MovableObject extends DrawableObject {
             }
         }
 
-// 
-        isColliding(mo) {
-            return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x + mo.width &&
-            this.y < mo.y + mo.height;
-        }
+        playAnimationOnce(images) {
+    if (this.currentImage < images.length) {
+        let path = images[this.currentImage];
+        this.img = this.imageCache[path];
+        this.currentImage++;
+    }
+}
 
-        hit() {
-            this.energy -= 5;
+        hit(damage) {
+            this.energy -= damage;
             if (this.energy < 0) {
                 this.energy = 0;
             } else {
@@ -43,11 +48,12 @@ class MovableObject extends DrawableObject {
          isHurt() {
           let timePassed = new Date().getTime() - this.lastHit;
            timePassed = timePassed / 1000;
-           return timePassed < 5;
+           return timePassed < 0.3;
         }
 
+     
         isDead() {
-            return this.energy == 0;
+            return this.energy <= 0;
         }
 
         playAnimation(images) {

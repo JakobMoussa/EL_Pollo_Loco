@@ -1,37 +1,39 @@
 class DrawableObject {
-    img;
+    x = 0;
+    y = 0;
+    width = 100;
+    height = 100;
+    img = null;
     imageCache = {};
     currentImage = 0;
-    x = 120;
-    y = 285;
-    height = 150;
-    width = 100;
 
-        loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
+    loadImage(path) {
+        const image = new Image();
+        image.src = path;
+        this.img = image;
+    }
+
+    loadImages(paths) {
+        paths.forEach(path => {
+            const image = new Image();
+            image.src = path;
+            this.imageCache[path] = image;
+        });
+    }
+
+
+    draw(ctx) {
+    ctx.save();
+
+    if (this.otherDirection) {
+        ctx.translate(this.x + this.width, this.y);
+        ctx.scale(-1, 1);
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+        } else {
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
         }
 
-        draw(ctx) {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        }
+        ctx.restore();  
+    }
 
-        drawFrame(ctx) {
-                if(this instanceof character || this instanceof chicken) {
-                ctx.beginPath();
-                ctx.lineWidth = '5';
-                ctx.strokeStyle = 'blue';
-                ctx.rect(this.x, this.y, this.width, this.height);
-                ctx.stroke();
-            }
-        }
-
-        loadImages(arr) {
-            arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-            });
-
-        }
 }
