@@ -5,28 +5,80 @@ class chicken extends MovableObject {
     width = 80;
 
     IMAGES_WALKING = [
-        'img//3_enemies_chicken/chicken_normal/1_walk/1_w.png',
+        'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
         'img/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ];
 
+    IMAGE_DEAD = ['img/3_enemies_chicken/chicken_normal/2_dead/dead.png'];
+    chickenIntervalIds = [];
+    offset = {
+        top: 0,
+        left: 30,
+        right: 50,
+        bottom: 0
+    };
+
+    dead_sound = new Audio('img/audios/chicken die.mp3');
+
     constructor() {
         super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
-        this.x = 200 + Math.random() * 500;
         this.loadImages(this.IMAGES_WALKING);
-        this.animate();
-        this.speed = 0.15 + Math.random() * 0.25;
-    }
-
-    animate() {
-        setInterval(() => {
-            this.moveLeft();
-    }, 1000 / 60);
+        this.loadImages(this.IMAGE_DEAD);
+        this.x = 350 + Math.random() * 500;
+        this.speed = 0.5 + Math.random() * 0.5;
     
+        this.animate();
+    }
+ 
+    // animate() {
+    //     this.setStoppableIntervalChicken(() => {
+          
+    //         this.moveLeft();
+    //     }, 1000 / 60);
 
-        setInterval(() => {
-            this.playAnimation(this.IMAGES_WALKING)
+    //     this.setStoppableIntervalChicken(() => {
+    //         this.playAnimation(this.IMAGES_WALKING);
+    //     }, 200);
+    // }
+    animate() {
+        this.setStoppableIntervalChicken(() => {
+            if (!window.gameStarted) return; // ⛔ wartet auf Start
+            this.moveLeft();
+        }, 1000 / 60);
+    
+        this.setStoppableIntervalChicken(() => {
+            if (!window.gameStarted) return;
+            this.playAnimation(this.IMAGES_WALKING);
         }, 200);
     }
+    
+
+    setStoppableIntervalChicken(fn, time) {
+        let id = setInterval(fn, time);
+        this.chickenIntervalIds.push(id);
+    }
+
+    animateDead() {
+        this.chickenIntervalIds.forEach(clearInterval);
+        this.playAnimation(this.IMAGE_DEAD);
+    }
+
+    // isDead() {
+    //     if(mute == false){
+    //     this.dead_sound.play();
+    //     }
+    //     this.energy = 0;
+    //     this.animateDead();
+    // }
+    isDead() {
+        if (!window.mute) {
+            this.dead_sound.currentTime = 0;
+            this.dead_sound.play();
+        }
+        this.energy = 0;
+        this.animateDead();
+    }
+    
 
 }

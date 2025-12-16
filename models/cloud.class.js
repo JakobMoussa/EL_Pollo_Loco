@@ -10,10 +10,7 @@ class cloud extends MovableObject {
 
     constructor() { 
         super();
-        
         this.loadImage(this.CLOUD_IMAGES[Math.floor(Math.random() * this.CLOUD_IMAGES.length)]);
-        
-        // Zufällige X-Position über größeren Bereich verteilt
         this.x = 200 + Math.random() * 2000;
         this.y = 10;
         
