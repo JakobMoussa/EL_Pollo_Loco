@@ -48,12 +48,12 @@ level1 = new Level (
     ],
     
     [
-        new chicken(700),
-        new chicken(1200),
-        new chicken(800),
         new chicken(),
         new chicken(),
-        new chicken(1000),
+        new chicken(),
+        new chicken(),
+        new chicken(),
+        new chicken(),
         new SmallChicken(),
         new SmallChicken(2200),
         new SmallChicken(2500)

@@ -29,44 +29,39 @@ class EndbossLifebar extends Bar {
         this.x = endbossX - 50;
     }
 
+    draw(ctx) {
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        this.roundRect(ctx, this.x, this.y, this.width, this.height, 6);
+        ctx.fill();
 
-draw(ctx) {
+        ctx.fillStyle = this.getHealthColor();
+        this.roundRect(ctx, this.x, this.y, this.width * (this.percentage / 100), this.height, 6);
+        ctx.fill();
 
-    ctx.fillStyle = "rgba(0,0,0,0.5)";
-    this.roundRect(ctx, this.x, this.y, this.width, this.height, 6);
-    ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        this.roundRect(ctx, this.x, this.y, this.width, this.height, 6);
+        ctx.stroke();
+    }
 
-    ctx.fillStyle = this.getHealthColor();
-    this.roundRect(ctx, this.x, this.y, this.width * (this.percentage / 100), this.height, 6);
-    ctx.fill();
+    roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+    }
 
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
-    this.roundRect(ctx, this.x, this.y, this.width, this.height, 6);
-    ctx.stroke();
-}
-
-roundRect(ctx, x, y, width, height, radius) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-}
-
-
-
-getHealthColor() {
-    if (this.percentage > 60) return "#2ecc71";   
-    if (this.percentage > 30) return "#b23137ff";
-    return "#e74c3c";
-}
-
+    getHealthColor() {
+        if (this.percentage > 60) return "#2ecc71";   
+        if (this.percentage > 30) return "#b23137ff";
+        return "#e74c3c";
+    }
 
 }
