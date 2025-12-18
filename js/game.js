@@ -18,10 +18,7 @@ let timer;
 let mute = false;
 let btnMute = document.getElementById('btnMute');
 let wonGame_sound = new Audio('img/audios/win-sounds.wav');
-// let gameStarted = false;
 window.gameStarted = false;
-
-
 
 function init() {
     canvas = document.getElementById('canvas');
@@ -36,41 +33,52 @@ function setStoppableInterval(fn, time) {
 
 function startGame() {
     window.gameStarted = true;
-    stopAllIntervals();    
-    document.getElementById('wonGameScreen').classList.add('d-none');
-    document.getElementById('gameOverScreen').classList.add('d-none');
-    document.getElementById('startScreenContainer').classList.add('d-none');
+    stopAllIntervals();
+    hideMenus();
+    prepareCanvas();
+    startWorld();
+}
+
+function prepareCanvas() {
     canvas = document.getElementById('canvas');
     canvas.classList.remove('d-none');
     canvas.style.display = 'block';
     init();
-    
+}
+
+function hideMenus() {
+    document.getElementById('wonGameScreen').classList.add('d-none');
+    document.getElementById('gameOverScreen').classList.add('d-none');
+    document.getElementById('startScreenContainer').classList.add('d-none');
+}
+
+function startWorld() {
     initLevel();
     world = new World(canvas, keyboard);
 }
 
-function bindKeyboardEvents() {
-    window.addEventListener('keydown', (e) => {
-        if (world && world.keyboard) {
-            if (e.keyCode == 39) world.keyboard.RIGHT = true;
-            if (e.keyCode == 37) world.keyboard.LEFT = true;
-            if (e.keyCode == 38) world.keyboard.UP = true;
-            if (e.keyCode == 40) world.keyboard.DOWN = true;
-            if (e.keyCode == 32) world.keyboard.SPACE = true;
-            if (e.keyCode == 68) world.keyboard.D = true;
-        }
-    });
+function bindKeyboardEvents () {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+}
 
-    window.addEventListener('keyup', (e) => {
-        if (world && world.keyboard) {
-            if (e.keyCode == 39) world.keyboard.RIGHT = false;
-            if (e.keyCode == 37) world.keyboard.LEFT = false;
-            if (e.keyCode == 38) world.keyboard.UP = false;
-            if (e.keyCode == 40) world.keyboard.DOWN = false;
-            if (e.keyCode == 32) world.keyboard.SPACE = false;
-            if (e.keyCode == 68) world.keyboard.D = false;
-        }
-    });
+function handleKeyDown(e) {
+    if (!world || !world.keyboard) return;
+    setKeyState(e.keyCode, true);
+}
+
+function handleKeyUp(e) {
+    if (!world || !world.keyboard) return;
+    setKeyState(e.keyCode, false);
+}
+
+function setKeyState(keyCode, value) {
+    if (keyCode === 39) world.keyboard.RIGHT = value;
+    if (keyCode === 37) world.keyboard.LEFT = value;
+    if (keyCode === 38) world.keyboard.UP = value;
+    if (keyCode === 40) world.keyboard.DOWN = value;
+    if (keyCode === 32) world.keyboard.SPACE = value;
+    if (keyCode === 68) world.keyboard.D = value;
 }
 
 function startTimer() {
@@ -94,16 +102,6 @@ function toggleMute() {
     btnMute.blur();
 }
 
-// function gameOver() {
-//     stopAllIntervals();
-//     document.getElementById('gameOverScreen').classList.remove('d-none');
-//     timer = 0;
-//     if (mute == false) {
-//         world.character.dead_sound.play();
-//     }
-//     clearIntervals();
-// }
-
 function wonGame() {
     clearIntervals();
     if (mute == false) {
@@ -118,40 +116,40 @@ function clearIntervals() {
     intervalIds.forEach(clearInterval);
 }
 
-
 function restartGame() {
-    if (world) {
-        world.stopAllIntervals?.(); 
-        
-        if (world.pauseLevelObjects) {
-            world.pauseLevelObjects();
-        }
-        
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        world = null;
-    }
-    
-    if (window.intervalIds) {
-        window.intervalIds.forEach(id => clearInterval(id));
-        window.intervalIds = [];
-    }
-    
-    gameStarted = false;
-    
-    document.getElementById('wonGameScreen').classList.add('d-none');
-    document.getElementById('gameOverScreen').classList.add('d-none');
-    document.getElementById('startScreenContainer').classList.remove('d-none');
-    
-
-    const h1 = document.querySelector('h1');
-    if (h1) h1.style.display = 'block';
-
-    document.getElementById('canvas').classList.add('d-none');
-    
-
-    keyboard = new Keyboard();
-    
+    window.gameStarted = false;
+    stopWorld();
+    clearIntervalsSafe();
+    resetCanvas();
+    hideMenus();
+    startWorld();
+    window.gameStarted = true;
 }
+
+// function stopWorld() {
+//     if (!world) return;
+//     world.stopGame();
+//     world = null;
+// }
+
+function stopWorld() {
+    if (!world) return;
+    world.destroy();
+    world = null;
+}
+
+
+function clearIntervalsSafe() {
+    if (!window.intervalIds) return;
+    window.intervalIds.forEach(clearInterval);
+    window.intervalIds = [];
+}
+
+function resetCanvas() {
+    canvas.classList.remove('d-none');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+
 

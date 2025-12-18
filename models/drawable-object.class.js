@@ -21,11 +21,10 @@ class DrawableObject {
         });
     }
 
-
     draw(ctx) {
     ctx.save();
 
-    if (this.otherDirection) {
+        if (this.otherDirection) {
         ctx.translate(this.x + this.width, this.y);
         ctx.scale(-1, 1);
         ctx.drawImage(this.img, 0, 0, this.width, this.height);

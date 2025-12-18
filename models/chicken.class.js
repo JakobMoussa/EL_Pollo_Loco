@@ -27,23 +27,12 @@ class chicken extends MovableObject {
         this.loadImages(this.IMAGE_DEAD);
         this.x = 350 + Math.random() * 500;
         this.speed = 0.5 + Math.random() * 0.5;
-    
         this.animate();
     }
  
-    // animate() {
-    //     this.setStoppableIntervalChicken(() => {
-          
-    //         this.moveLeft();
-    //     }, 1000 / 60);
-
-    //     this.setStoppableIntervalChicken(() => {
-    //         this.playAnimation(this.IMAGES_WALKING);
-    //     }, 200);
-    // }
     animate() {
         this.setStoppableIntervalChicken(() => {
-            if (!window.gameStarted) return; // ⛔ wartet auf Start
+            if (!window.gameStarted) return;
             this.moveLeft();
         }, 1000 / 60);
     
@@ -53,7 +42,6 @@ class chicken extends MovableObject {
         }, 200);
     }
     
-
     setStoppableIntervalChicken(fn, time) {
         let id = setInterval(fn, time);
         this.chickenIntervalIds.push(id);
@@ -64,13 +52,6 @@ class chicken extends MovableObject {
         this.playAnimation(this.IMAGE_DEAD);
     }
 
-    // isDead() {
-    //     if(mute == false){
-    //     this.dead_sound.play();
-    //     }
-    //     this.energy = 0;
-    //     this.animateDead();
-    // }
     isDead() {
         if (!window.mute) {
             this.dead_sound.currentTime = 0;
@@ -79,6 +60,4 @@ class chicken extends MovableObject {
         this.energy = 0;
         this.animateDead();
     }
-    
-
 }

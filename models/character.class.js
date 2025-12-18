@@ -124,7 +124,6 @@ class Character extends MovableObject {
         
         if (this.canMoveRight()) this.moveRight();
         if (this.canMoveLeft()) this.moveLeft();
-        
         if (this.canJump()) {
             this.jump();
             this.idleTime = 0;
@@ -134,7 +133,6 @@ class Character extends MovableObject {
 
     handleIdleAnimation() {
         if (!this.world || !this.world.keyboard) return;
-        
         if (!this.world.keyboard.RIGHT && !this.world.keyboard.SPACE && 
             !this.world.keyboard.LEFT && !this.world.keyboard.D && !this.isHurt()) {
             
@@ -147,39 +145,51 @@ class Character extends MovableObject {
         }
     }
 
-handleCharacterAnimation() {
-    if (this.isDead()) {
+    handleCharacterAnimation() {
+        if (this.handleDeath()) return;
+        if (this.handleHurt()) return;
+        if (this.handleGroundAnimation()) return;
+        this.handleAirAnimation();
+    }
+
+    handleDeath() {
+        if (!this.isDead()) return false;
         this.playAnimation(this.IMAGES_DEAD);
-        return;
+        return true;
     }
-    if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
 
-        if (!this.hurtSoundPlayed && !window.mute) {
-            this.hurtSoundPlayed = true;
-            this.hurt_sound.currentTime = 0;
-            this.hurt_sound.play();
+    handleHurt() {
+        if (!this.isHurt()) {
+            this.hurtSoundPlayed = false;
+            return false;
         }
-        return;
-    } else {
-        this.hurtSoundPlayed = false;
+
+        this.playAnimation(this.IMAGES_HURT);
+        this.playHurtSound();
+        return true;
     }
 
-    if (!this.isAboveGround()) {
-        this.isCharacterAboveGround = false;
+    playHurtSound() {
+        if (this.hurtSoundPlayed || window.mute) return;
+        this.hurtSoundPlayed = true;
+        this.hurt_sound.currentTime = 0;
+        this.hurt_sound.play();
+    }
 
-        if (this.world && this.world.keyboard &&
-           (this.world.keyboard.RIGHT || this.world.keyboard.LEFT)) {
+    handleGroundAnimation() {
+        if (this.isAboveGround()) return false;
+
+        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
             this.playAnimation(this.IMAGES_WALKING);
         }
-        return;
+        return true;
     }
 
-    if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMPING);
+    handleAirAnimation() {
+        if (this.isAboveGround()) {
+            this.playAnimation(this.IMAGES_JUMPING);
+        }
     }
-}
-
 
     handleCharacterJumpingAnimation() {
         if (this.isAboveGround()) {
@@ -257,26 +267,38 @@ handleCharacterAnimation() {
         this.bottles -= 20;
     }
 
-hit(damage) {
-    this.energy -= damage;
-    if (this.energy < 0) this.energy = 0;
 
-    this.lastHit = Date.now();
-
-    if (this.world && this.world.healthBar) {
-        this.world.healthBar.setPercentage(this.energy);
+    hit(damage) {
+        this.applyDamage(damage);
+        this.updateHealthBar();
+        this.checkGameOver();
     }
 
-    if (this.energy === 0 && this.world) {
-        if (!window.mute) {
-            this.dead_sound.currentTime = 0;
-            this.dead_sound.play();
+    applyDamage(damage) {
+        this.energy -= damage;
+        if (this.energy < 0) this.energy = 0;
+        this.lastHit = Date.now();
+    }
+
+    updateHealthBar() {
+        if (this.world?.healthBar) {
+            this.world.healthBar.setPercentage(this.energy);
         }
+    }
+
+    checkGameOver() {
+        if (this.energy > 0 || !this.world) return;
+
+        this.playDeathSound();
         this.world.stopGame();
         this.world.showEndscreen("img/You won, you lost/You lost.png");
     }
-}
 
+    playDeathSound() {
+        if (window.mute) return;
+        this.dead_sound.currentTime = 0;
+        this.dead_sound.play();
+    }
 
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;
@@ -294,10 +316,10 @@ hit(damage) {
             this.walking_sound.play();
         }
     } 
-    else if (!moving || !this.isOnGround() || window.mute) {
-        this.walking_sound.pause();
-        this.runSoundPlaying = false;
-    }
-}
+        else if (!moving || !this.isOnGround() || window.mute) {
+            this.walking_sound.pause();
+            this.runSoundPlaying = false;
+            }   
+        }
 
 }

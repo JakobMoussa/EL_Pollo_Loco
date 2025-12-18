@@ -30,15 +30,6 @@ class SmallChicken extends MovableObject {
         this.animate();
     }
  
-    // animate() {
-    //     setInterval(() => {
-    //         this.moveLeft();
-    //     }, 1000 / 60);
-
-    //     setInterval(() => {
-    //         this.playAnimation(this.IMAGES_WALKING);
-    //     }, 200);
-    // }
     animate() {
         setInterval(() => {
             if (!window.gameStarted) return;
@@ -51,16 +42,12 @@ class SmallChicken extends MovableObject {
         }, 200);
     }
     
-    
     animateDead() {
         this.chickenIntervalIds.forEach(clearInterval);
         this.playAnimation(this.IMAGE_DEAD);
     }
 
     isDead() {
-        // if (window.mute == false) {
-        //     this.dead_sound.play();
-        // }
         if (!window.mute) {
             this.dead_sound.currentTime = 0;
             this.dead_sound.play();

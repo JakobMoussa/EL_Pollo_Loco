@@ -65,57 +65,83 @@ class Endboss extends MovableObject {
         this.animate();
     }
 
-animate() {
-
-    setInterval(() => {
-        if (!this.world || !this.world.character) return;
-        if (this.energy <= 0) return;
-
-        let character = this.world.character;
-        let distance = Math.abs(this.x - character.x);
-
-        if (distance < this.alertRange) {
-            this.isAlerted = true;
-
-            if (!this.isAttacking) {
-                this.moveLeft();
-            }
-        }
-
-    }, 1000 / 60);
-
-
-    setInterval(() => {
-        this.handleAnimation();
-    }, 120);
-}
-
-    handleAnimation() {
-
-        if (this.energy <= 0) {
-            this.playAnimation(this.IMAGES_DEAD);
-            this.dead = true;
-            return;
-        }
-
-        if (this.isHurt()) {
-            this.playAnimation(this.IMAGES_HURT);
-            return;
-        }
-
-        if (this.isAttacking) {
-            this.playAnimation(this.IMAGES_ATTACK);
-            return;
-        }
-
-        if (this.isAlerted) {
-            this.playAnimation(this.IMAGES_ALERT);
-            return;
-        }
-
-        this.playAnimation(this.IMAGES_WALKING);
+    animate() {
+        this.startMovementLoop();
+        this.startAnimationLoop();
     }
 
+    startMovementLoop() {
+        setInterval(() => this.updateMovement(), 1000 / 60);
+    }
+
+    updateMovement() {
+        if (!this.canAct()) return;
+
+        if (this.isCharacterInRange()) {
+            this.isAlerted = true;
+            this.moveTowardsCharacter();
+        }
+    }
+
+    canAct() {
+        return this.world && this.world.character && this.energy > 0;
+    }
+
+    isCharacterInRange() {
+        const distance = Math.abs(this.x - this.world.character.x);
+        return distance < this.alertRange;
+    }
+
+    moveTowardsCharacter() {
+        if (!this.isAttacking) {
+            this.moveLeft();
+        }
+    }
+
+    startAnimationLoop() {
+        setInterval(() => this.handleAnimation(), 120);
+    }
+
+    handleAnimation() {
+        if (this.handleDeath()) return;
+        if (this.handleHurt()) return;
+        if (this.handleAttack()) return;
+        if (this.handleWalking()) return;
+        this.handleIdle();
+    }
+
+    handleDeath() {
+        if (this.energy > 0) return false;
+        this.playAnimation(this.IMAGES_DEAD);
+        return true;
+    }
+
+    handleHurt() {
+        if (!this.isHurt()) return false;
+        this.playAnimation(this.IMAGES_HURT);
+        return true;
+    }
+
+    handleAttack() {
+        if (!this.isAttacking) return false;
+        this.playAnimation(this.IMAGES_ATTACK);
+        return true;
+    }
+
+    handleWalking() {
+        if (!this.isAlerted || this.speed <= 0) return false;
+        this.playAnimation(this.IMAGES_WALKING);
+        return true;
+    }
+
+    handleIdle() {
+        if (this.isAlerted) {
+            this.playAnimation(this.IMAGES_ALERT);
+        } else {
+            this.playAnimation(this.IMAGES_WALKING);
+        }
+    }
+    
     attack() {
         if (!this.isAttacking) {
             this.isAttacking = true;
@@ -126,61 +152,40 @@ animate() {
         this.isAttacking = false;
     }
 
-    // hit() {
-    //     this.lastHit = Date.now();
-    //     this.energy -= 13;
-
-    //     if (this.energy < 0) {
-    //         this.energy = 0;
-    //     }
-
-    //     if (this.energy === 0 && this.world) {
-
-            // if (!this.deadSoundPlayed) {
-            //     this.deadSoundPlayed = true;
-            //     if (!window.mute) {
-            //         this.dead_sound.currentTime = 0;
-            //         this.dead_sound.play();
-            //     }
-            // }
-
-    //         this.isDead = true;
-    //         setTimeout(() => {
-    //             this.world.stopGame();
-    //             this.world.showCustomWinScreen();
-    //         }, 2000);
-    //     }
-    // }
     hit() {
         if (this.hasDied) return;
     
+        this.applyDamage();
+        this.checkDeath();
+    }
+
+    applyDamage() {
         this.lastHit = Date.now();
         this.energy -= 13;
+        if (this.energy < 0) this.energy = 0;
+    }
+
+    checkDeath() {
+        if (this.energy > 0 || !this.world) return;
     
-        if (this.energy < 0) {
-            this.energy = 0;
-        }
-    
-        if (this.energy === 0 && this.world) {
-            this.hasDied = true;
-    
-            if (!this.deadSoundPlayed) {
-                this.deadSoundPlayed = true;
-                if (!window.mute) {
-                    this.dead_sound.currentTime = 0;
-                    this.dead_sound.play();
-                }
-            }
-    
-            setTimeout(() => {
-                // this.world.stopGame();
-                this.world.showCustomWinScreen();
-            }, 1000);
-        }
+        this.hasDied = true;
+        this.playDeathSound();
+        this.triggerWinScreen();
+    }
+
+    playDeathSound() {
+        if (this.deadSoundPlayed || window.mute) return;
+        this.deadSoundPlayed = true;
+        this.dead_sound.currentTime = 0;
+        this.dead_sound.play();
+    }
+
+    triggerWinScreen() {
+        setTimeout(() => {
+            this.world.showCustomWinScreen();
+        }, 1000);
     }
     
-    
-
     isHurt() {
         return (Date.now() - this.lastHit) < 400;
     }

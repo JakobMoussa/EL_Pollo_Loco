@@ -3,7 +3,6 @@ class musicStatus extends DrawableObject {
             'img/music-img/music.png',
         ];
 
-           
   constructor() {
         super();
         this.loadImages(this.IMAGES);

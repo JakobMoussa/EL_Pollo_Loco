@@ -6,7 +6,7 @@ class Bar extends DrawableObject {
     percentage;
     IMAGES = [];
 
-   constructor() {
+    constructor() {
         super();
     }
 
@@ -16,7 +16,7 @@ class Bar extends DrawableObject {
         this.img = this.imageCache[path];
     }
     
-        resolveImageIndex() {
+    resolveImageIndex() {
             if (this.percentage == 100) {
                 return 5;
             } else if (this.percentage > 79) {
