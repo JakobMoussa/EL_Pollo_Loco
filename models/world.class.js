@@ -104,8 +104,6 @@ class World {
         this.drawEnemies();
         this.drawCharacterAndProjectiles();
         this.drawThrowableObjects();
-        console.log("Flaschen:", this.throwableObjects.length);
-
     }
 
     drawThrowableObjects() {
@@ -190,6 +188,7 @@ class World {
     addCanvasClickListener() {
         this.canvas.removeEventListener("click", this.handleCanvasClick);
         this.canvas.addEventListener("click", this.handleCanvasClick);
+        this.canvas.addEventListener("touchstart", this.handleCanvasTouch.bind(this));
     }
     
     handleCanvasClick(event) {
@@ -623,5 +622,15 @@ showEndscreen(imagePath) {
         this.canvas.removeEventListener("click", this.handleCanvasClick);
         this.isRunning = false;
     }
-    
+
+        handleCanvasTouch(e) {
+        const touch = e.touches[0];
+        if (!touch) return;
+
+        const rect = this.canvas.getBoundingClientRect();
+        this.handleCanvasClick({
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+    }
 }

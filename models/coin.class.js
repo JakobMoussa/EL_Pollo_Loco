@@ -1,8 +1,13 @@
+/**
+ * Coin class representing collectable coins in the game.
+ * Extends MovableObject to inherit basic object capabilities.
+ * Coins play a rotating animation and can be collected by the player.
+ * @extends MovableObject
+ */
 class Coin extends MovableObject {
     height = 100;
     width = 100;
     currentImage = 0;
-    
     IMAGES_COIN = [
         'img/8_coin/coin_1.png',
         'img/8_coin/coin_2.png'
@@ -15,8 +20,21 @@ class Coin extends MovableObject {
         bottom: 30
     };
 
+    /** 
+     * Interval ID for the coin animation.
+     * Used to stop the animation when coin is collected.
+     * @type {number|null} 
+     */
     coinIntervalId = null;
 
+    /**
+     * Creates a new Coin instance.
+     * Loads coin images, sets position (uses provided coordinates or random),
+     * and starts the rotation animation.
+     * @constructor
+     * @param {number} [x] - Horizontal position. If undefined, uses random position between 200-1900
+     * @param {number} [y] - Vertical position. If undefined, uses random position between 200-250
+     */
     constructor(x, y) {
         super();
         this.loadImage('img/8_coin/coin_1.png');
@@ -28,6 +46,12 @@ class Coin extends MovableObject {
         this.animate();
     }
 
+    /**
+     * Starts the coin rotation animation.
+     * Alternates between coin images every 300ms to create spinning effect.
+     * Registers interval ID in global intervalIds array for cleanup if available.
+     * @returns {void}
+     */
     animate() {
         this.coinIntervalId = setInterval(() => {
             this.playAnimation(this.IMAGES_COIN);
@@ -39,6 +63,12 @@ class Coin extends MovableObject {
         }
     }
     
+    /**
+     * Stops the coin animation.
+     * Clears the animation interval and resets the interval ID.
+     * Called when coin is collected or needs to be removed from the game.
+     * @returns {void}
+     */
     stopCoinAnimation() {
         if (this.coinIntervalId) {
             clearInterval(this.coinIntervalId);

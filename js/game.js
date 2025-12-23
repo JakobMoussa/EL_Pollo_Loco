@@ -37,6 +37,7 @@ function startGame() {
     hideMenus();
     prepareCanvas();
     startWorld();
+    keyboard.initTouchControls();
 }
 
 function prepareCanvas() {
@@ -126,12 +127,6 @@ function restartGame() {
     window.gameStarted = true;
 }
 
-// function stopWorld() {
-//     if (!world) return;
-//     world.stopGame();
-//     world = null;
-// }
-
 function stopWorld() {
     if (!world) return;
     world.destroy();
@@ -150,6 +145,3 @@ function resetCanvas() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
-
-
-
