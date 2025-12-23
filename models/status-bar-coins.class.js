@@ -1,3 +1,9 @@
+/**
+ * statusBarCoins class representing the coin collection status bar.
+ * Extends Bar to inherit base bar functionality.
+ * Displays the number of collected coins in the game.
+ * @extends Bar
+ */
 class statusBarCoins extends Bar {
 
     IMAGES = [
@@ -9,8 +15,15 @@ class statusBarCoins extends Bar {
         'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/100.png'
     ];
 
+    /** @type {number} Current coin collection percentage (0-100) */
     percentage = 0;
 
+    /**
+     * Creates a new statusBarCoins instance.
+     * Loads all coin bar images and initializes at 0% (no coins collected).
+     * Positions the bar at the top of the UI, above other status bars.
+     * @constructor
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
